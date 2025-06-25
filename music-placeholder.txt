@@ -1,0 +1,15 @@
+# Tạo file âm thanh mẫu
+# Bạn cần thay thế file này bằng một file nhạc piano thực sự
+# File này chỉ là placeholder để tránh lỗi 404
+
+# Để có nhạc nền thực sự, bạn có thể:
+# 1. Tải một file nhạc piano .mp3 và đặt tên là "background-music.mp3"
+# 2. Hoặc sử dụng một URL trực tuyến trong thẻ audio
+
+# Một số nguồn nhạc miễn phí:
+# - https://freemusicarchive.org/
+# - https://www.bensound.com/
+# - https://pixabay.com/music/
+
+# Ví dụ thay thế src trong HTML:
+# <audio id="music" src="https://www.bensound.com/bensound-music/bensound-pianomoment.mp3" loop></audio>

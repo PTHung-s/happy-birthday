@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bánh Sinh Nhật Hạt Phát Sáng</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="bg"></canvas>
+    <audio id="music" loop>
+        <source src="background-music.mp3" type="audio/mpeg">
+        <!-- Fallback với nhạc online -->
+        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav">
+    </audio>
+    
+    <div id="clickNotice" class="click-notice">
+        <p>🎂 Click để bắt đầu tiệc sinh nhật 🎉</p>
+        <small>🎵 Nhạc nền Happy Birthday sẽ được phát</small>
+    </div>
+    
+    <!-- Import Three.js từ CDN -->
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <!-- Import GSAP từ CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <!-- Import script chính -->
+    <script src="script.js"></script>
+</body>
+</html>

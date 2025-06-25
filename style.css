@@ -1,0 +1,81 @@
+/* Reset margin và padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #000000;
+    font-family: Arial, sans-serif;
+}
+
+/* Canvas chiếm toàn bộ màn hình */
+#bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Ẩn audio element */
+#music {
+    display: none;
+}
+
+/* Cursor pointer để người dùng biết có thể click */
+body {
+    cursor: pointer;
+}
+
+/* Hiệu ứng fade in khi trang load */
+body {
+    opacity: 0;
+    animation: fadeIn 2s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Thông báo click để phát nhạc */
+.click-notice {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 20px;
+    text-align: center;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px 30px;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.click-notice.show {
+    opacity: 1;
+}
+
+.click-notice p {
+    margin: 0 0 10px 0;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.click-notice small {
+    font-size: 14px;
+    opacity: 0.8;
+}
