@@ -147,9 +147,45 @@ class ResponsiveManager {
     }
     
     autoConfigureCake() {
-        // Tự động điều chỉnh scale bánh kem
+        // Tự động điều chỉnh scale và vị trí bánh kem
         let autoScale = this.getOptimalCakeScale();
+        let autoPosition = this.getOptimalCakePosition();
+        
         CAKE_CONFIG.scale = autoScale;
+        
+        // Áp dụng vị trí bánh kem nếu có cakeEffect
+        if (window.cakeEffect && window.cakeEffect.particleSystem) {
+            window.cakeEffect.particleSystem.position.set(autoPosition.x, autoPosition.y, autoPosition.z);
+        }
+    }
+    
+    getOptimalCakePosition() {
+        let positionY = 0; // Vị trí mặc định
+        
+        if (this.deviceType === 'mobile') {
+            if (this.isPortrait) {
+                // Di chuyển bánh kem xuống dưới trên mobile dọc để nằm trong trái tim
+                positionY = -0.3; // Xuống 0.3 đơn vị trong không gian 3D
+            } else {
+                // Mobile ngang - xuống ít hơn
+                positionY = -0.15;
+            }
+        } else if (this.deviceType === 'tablet') {
+            if (this.isPortrait) {
+                positionY = -0.2;
+            } else {
+                positionY = -0.1;
+            }
+        } else {
+            // Desktop - vị trí cân bằng
+            positionY = -0.1;
+        }
+        
+        return {
+            x: 0,
+            y: positionY,
+            z: 0
+        };
     }
     
     getOptimalHeartSize() {
@@ -159,17 +195,17 @@ class ResponsiveManager {
         // Dựa trên kích thước màn hình
         if (this.deviceType === 'mobile') {
             if (this.isPortrait) {
-                // Portrait mobile - nhỏ hơn
-                sizeMultiplier = Math.max(0.8, this.screenWidth / 600);
+                // Portrait mobile - TĂNG kích thước trái tim lên to hơn
+                sizeMultiplier = Math.max(1.2, this.screenWidth / 400); // Tăng từ 0.8 lên 1.2
             } else {
                 // Landscape mobile - vừa phải
-                sizeMultiplier = Math.max(0.9, this.screenWidth / 800);
+                sizeMultiplier = Math.max(1.0, this.screenWidth / 700);
             }
         } else if (this.deviceType === 'tablet') {
             if (this.isPortrait) {
-                sizeMultiplier = Math.max(0.9, this.screenWidth / 700);
+                sizeMultiplier = Math.max(1.0, this.screenWidth / 600);
             } else {
-                sizeMultiplier = Math.max(1.1, this.screenWidth / 900);
+                sizeMultiplier = Math.max(1.2, this.screenWidth / 800);
             }
         } else {
             // Desktop - tự động scale theo resolution
@@ -245,31 +281,32 @@ class ResponsiveManager {
     }
     
     getOptimalCakeScale() {
-        // Kích thước bánh kem vừa phải, luôn nhỏ hơn trái tim
-        let baseScale = 1.0; // Quay về kích thước cơ bản
+        // Kích thước bánh kem nhỏ hơn, đặc biệt trên mobile dọc
+        let baseScale = 1.0;
         
         if (this.deviceType === 'mobile') {
             if (this.isPortrait) {
-                baseScale = Math.max(0.5, this.screenWidth / 600);
+                // Mobile dọc - bánh kem nhỏ hơn để nằm gọn trong trái tim
+                baseScale = Math.max(0.3, this.screenWidth / 800); // Giảm từ 0.5 xuống 0.3
             } else {
-                baseScale = Math.max(0.8, this.screenWidth / 800);
+                baseScale = Math.max(0.5, this.screenWidth / 800);
             }
         } else if (this.deviceType === 'tablet') {
-            baseScale = Math.max(0.8, this.screenWidth / 900);
+            baseScale = Math.max(0.6, this.screenWidth / 900);
         } else {
             // Desktop - kích thước hợp lý
             if (this.screenWidth >= 1920) {
-                baseScale = 1.3;
-            } else if (this.screenWidth >= 1440) {
-                baseScale = 1.2;
-            } else {
                 baseScale = 1.0;
+            } else if (this.screenWidth >= 1440) {
+                baseScale = 0.9;
+            } else {
+                baseScale = 0.8;
             }
         }
         
         // Đảm bảo bánh kem nhỏ hơn trái tim
         let heartSize = this.getOptimalHeartSize();
-        let maxCakeScale = heartSize * 0.6; // Bánh kem = 60% kích thước trái tim
+        let maxCakeScale = heartSize * 0.4; // Giảm từ 60% xuống 40% kích thước trái tim
         
         return Math.min(baseScale, maxCakeScale);
     }
@@ -341,6 +378,47 @@ window.debugCake = function() {
 };
 
 console.log('🔧 Debug function available: debugCake()');
+
+// Global function để điều chỉnh vị trí bánh kem
+window.adjustCakePosition = function(x = 0, y = -0.3, z = 0) {
+    if (window.cakeEffect?.particleSystem) {
+        window.cakeEffect.particleSystem.position.set(x, y, z);
+        console.log(`🎂 Cake position adjusted to: x=${x}, y=${y}, z=${z}`);
+    } else {
+        console.log('❌ Cake effect not found');
+    }
+};
+
+// Function để reset vị trí bánh kem về mặc định
+window.resetCakePosition = function() {
+    const pos = window.responsiveManager?.getOptimalCakePosition() || { x: 0, y: 0, z: 0 };
+    if (window.cakeEffect?.particleSystem) {
+        window.cakeEffect.particleSystem.position.set(pos.x, pos.y, pos.z);
+        console.log('🎂 Cake position reset to optimal:', pos);
+    }
+};
+
+// Function để test kích thước trái tim và bánh kem
+window.testSizes = function() {
+    const heartSize = window.responsiveManager?.getOptimalHeartSize();
+    const cakeScale = window.responsiveManager?.getOptimalCakeScale();
+    const cakePos = window.responsiveManager?.getOptimalCakePosition();
+    
+    console.log(`
+🎯 === SIZE TEST ===
+❤️ Heart Size: ${heartSize?.toFixed(2)}
+🎂 Cake Scale: ${cakeScale?.toFixed(2)}
+📍 Cake Position: y=${cakePos?.y?.toFixed(2)}
+📱 Device: ${window.responsiveManager?.deviceType}
+🔄 Portrait: ${window.responsiveManager?.isPortrait}
+====================
+    `);
+};
+
+console.log('🔧 Position control functions available:');
+console.log('  adjustCakePosition(x, y, z) - Điều chỉnh vị trí bánh kem');
+console.log('  resetCakePosition() - Reset về vị trí tối ưu');
+console.log('  testSizes() - Kiểm tra kích thước hiện tại');
 
 // Export instance
 const responsiveManager = new ResponsiveManager();

@@ -8,9 +8,10 @@
 html, body {
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow: auto; /* Cho phép scroll */
     background-color: #000000;
     font-family: Arial, sans-serif;
+    min-height: 100vh; /* Đảm bảo chiều cao tối thiểu */
 }
 
 /* Canvas chiếm toàn bộ màn hình */
@@ -284,33 +285,56 @@ body {
     }
 }
 
-@media (max-width: 480px) {
+/* Sửa vấn đề scroll trên mobile */
+@media (max-width: 768px) {
+    html, body {
+        overflow-x: hidden; /* Chỉ ẩn scroll ngang */
+        overflow-y: auto;   /* Cho phép scroll dọc */
+    }
+}
+
+/* Responsive cho mobile landscape */
+@media (max-width: 768px) and (orientation: landscape) {
+    html, body {
+        overflow: auto; /* Cho phép scroll cả 2 chiều khi landscape */
+        height: auto;
+        min-height: 100vh;
+    }
+    
+    /* Đảm bảo content có thể scroll */
     .birthday-text-container {
-        top: 10%;
+        position: relative; /* Thay vì fixed để có thể scroll */
+        margin-top: 10vh;
+        margin-bottom: 10vh;
     }
     
-    .happy-birthday-main {
-        font-size: 22px;
-        letter-spacing: 1px;
+    .floating-texts {
+        position: absolute; /* Thay vì fixed */
+    }
+}
+
+/* Responsive cho mobile portrait - giữ nguyên fixed để trái tim hiển thị đẹp */
+@media (max-width: 768px) and (orientation: portrait) {
+    html, body {
+        overflow: hidden; /* Ẩn scroll để trái tim hiển thị full screen */
     }
     
-    .birthday-name {
-        font-size: 20px;
+    .birthday-text-container {
+        position: fixed;
+        top: 15%; /* Đưa text lên cao hơn để nhìn rõ */
     }
-    
-    .birth-year {
-        font-size: 16px;
-    }
-    
-    .floating-name {
-        font-size: 14px;
-    }
-    
-    .floating-year {
-        font-size: 12px;
-    }
-    
-    .floating-emoji {
-        font-size: 18px;
-    }
+}
+
+/* Canvas luôn fixed để làm background */
+#bg, #heartCanvas {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1 !important;
+}
+
+#heartCanvas {
+    z-index: 2 !important;
 }
