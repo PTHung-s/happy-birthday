@@ -23,6 +23,19 @@ html, body {
     z-index: 1;
 }
 
+/* Canvas cho hiệu ứng trái tim */
+#heartCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none; /* Cho phép click qua canvas trái tim */
+    opacity: 0.9; /* Tăng độ mờ để trái tim sáng hơn */
+    mix-blend-mode: screen; /* Tạo hiệu ứng blend sáng hơn */
+}
+
 /* Ẩn audio element */
 #music {
     display: none;
@@ -78,4 +91,207 @@ body {
 .click-notice small {
     font-size: 14px;
     opacity: 0.8;
+}
+
+/* Thông báo auto-responsive */
+.auto-responsive-notice {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 255, 0, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 11px;
+    border: 1px solid rgba(0, 255, 0, 0.3);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.auto-responsive-notice.show {
+    opacity: 1;
+}
+
+.auto-responsive-notice.fade-out {
+    opacity: 0;
+}
+
+/* Text trang trí sinh nhật */
+.birthday-text-container {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+    animation: fadeInText 3s ease-in-out 2s forwards;
+}
+
+.happy-birthday-main {
+    font-size: 48px;
+    font-weight: bold;
+    color: #ff69b4;
+    text-shadow: 
+        0 0 20px #ff69b4,
+        0 0 30px #ff1493,
+        0 0 40px #ff1493,
+        0 0 50px #ff1493;
+    margin: 0 0 20px 0;
+    animation: glow 2s ease-in-out infinite alternate;
+    font-family: 'Arial Black', Arial, sans-serif;
+    letter-spacing: 3px;
+}
+
+.birthday-name {
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffd700;
+    text-shadow: 
+        0 0 15px #ffd700,
+        0 0 25px #ffff00,
+        0 0 35px #ffff00;
+    margin: 0 0 15px 0;
+    animation: pulse 3s ease-in-out infinite;
+    font-family: 'Arial Black', Arial, sans-serif;
+}
+
+.birth-year {
+    font-size: 24px;
+    font-weight: bold;
+    color: #00ffff;
+    text-shadow: 
+        0 0 10px #00ffff,
+        0 0 20px #0080ff,
+        0 0 30px #0080ff;
+    animation: sparkle 2s ease-in-out infinite;
+    font-family: 'Arial Black', Arial, sans-serif;
+}
+
+/* Floating texts xung quanh */
+.floating-texts {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.floating-text {
+    position: absolute;
+    font-weight: bold;
+    font-family: 'Arial Black', Arial, sans-serif;
+    pointer-events: none;
+    opacity: 0.8;
+    animation: floatAround 8s linear infinite;
+}
+
+.floating-name {
+    font-size: 20px;
+    color: #ff69b4;
+    text-shadow: 0 0 10px #ff69b4;
+}
+
+.floating-year {
+    font-size: 18px;
+    color: #00ffff;
+    text-shadow: 0 0 8px #00ffff;
+}
+
+/* Animations */
+@keyframes fadeInText {
+    0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes glow {
+    0% { text-shadow: 0 0 20px #ff69b4, 0 0 30px #ff1493, 0 0 40px #ff1493; }
+    100% { text-shadow: 0 0 30px #ff69b4, 0 0 40px #ff1493, 0 0 50px #ff1493, 0 0 60px #ff1493; }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    25% { opacity: 0.7; transform: scale(0.95); }
+    50% { opacity: 1; transform: scale(1.05); }
+    75% { opacity: 0.8; transform: scale(1); }
+}
+
+@keyframes floatAround {
+    0% { 
+        transform: translateX(0) translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.8; }
+    100% { 
+        transform: translateX(100vw) translateY(-50px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Responsive cho text */
+@media (max-width: 768px) {
+    .birthday-text-container {
+        top: 15%;
+    }
+    
+    .happy-birthday-main {
+        font-size: 28px;
+        letter-spacing: 2px;
+    }
+    
+    .birthday-name {
+        font-size: 24px;
+    }
+    
+    .birth-year {
+        font-size: 18px;
+    }
+    
+    .floating-name {
+        font-size: 16px;
+    }
+    
+    .floating-year {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .birthday-text-container {
+        top: 10%;
+    }
+    
+    .happy-birthday-main {
+        font-size: 22px;
+        letter-spacing: 1px;
+    }
+    
+    .birthday-name {
+        font-size: 20px;
+    }
+    
+    .birth-year {
+        font-size: 16px;
+    }
+    
+    .floating-name {
+        font-size: 14px;
+    }
+    
+    .floating-year {
+        font-size: 12px;
+    }
 }

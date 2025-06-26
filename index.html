@@ -2,12 +2,15 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bánh Sinh Nhật Hạt Phát Sáng</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <canvas id="bg"></canvas>
+    <!-- Canvas cho hiệu ứng trái tim -->
+    <canvas id="heartCanvas"></canvas>
+    
     <audio id="music" loop>
         <source src="background-music.mp3" type="audio/mpeg">
         <!-- Fallback với nhạc online -->
@@ -19,12 +22,33 @@
         <small>🎵 Nhạc nền Happy Birthday sẽ được phát</small>
     </div>
     
+    <!-- Text trang trí sinh nhật -->
+    <div id="birthdayText" class="birthday-text-container">
+        <h1 class="happy-birthday-main">🎉 HAPPY BIRTHDAY 🎉</h1>
+        <h2 class="birthday-name" id="birthdayName">Tên Sinh Nhật</h2>
+        <div class="birth-year">✨ 2006 ✨</div>
+    </div>
+    
+    <!-- Container cho text trang trí bay xung quanh -->
+    <div id="floatingTexts" class="floating-texts"></div>
+    
+    <!-- Thông báo tự động điều chỉnh -->
+    <div id="autoResponsiveNotice" class="auto-responsive-notice">
+        🎯 Tự động điều chỉnh cho <span id="deviceType">thiết bị</span>
+    </div>
+    
     <!-- Import Three.js từ CDN -->
     <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
     <!-- Import GSAP từ CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     
-    <!-- Import script chính -->
-    <script src="script.js"></script>
+    <!-- Import các module của ứng dụng -->
+    <script src="js/config.js"></script>
+    <script src="js/responsive.js"></script>
+    <script src="js/text-effects.js"></script>
+    <script src="js/heart-effect.js"></script>
+    <script src="js/cake-effect.js"></script>
+    <script src="js/controls.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
