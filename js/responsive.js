@@ -195,17 +195,17 @@ class ResponsiveManager {
         // Dựa trên kích thước màn hình
         if (this.deviceType === 'mobile') {
             if (this.isPortrait) {
-                // Portrait mobile - TĂNG kích thước trái tim lên to hơn
-                sizeMultiplier = Math.max(1.2, this.screenWidth / 400); // Tăng từ 0.8 lên 1.2
+                // Portrait mobile - TĂNG thêm 30% nữa
+                sizeMultiplier = Math.max(1.5, this.screenWidth / 350); // Tăng từ 1.2 lên 1.5
             } else {
-                // Landscape mobile - vừa phải
-                sizeMultiplier = Math.max(1.0, this.screenWidth / 700);
+                // Landscape mobile - tăng thêm 30%
+                sizeMultiplier = Math.max(1.3, this.screenWidth / 600); // Tăng từ 1.0 lên 1.3
             }
         } else if (this.deviceType === 'tablet') {
             if (this.isPortrait) {
-                sizeMultiplier = Math.max(1.0, this.screenWidth / 600);
+                sizeMultiplier = Math.max(1.3, this.screenWidth / 500); // Tăng từ 1.0 lên 1.3
             } else {
-                sizeMultiplier = Math.max(1.2, this.screenWidth / 800);
+                sizeMultiplier = Math.max(1.5, this.screenWidth / 700); // Tăng từ 1.2 lên 1.5
             }
         } else {
             // Desktop - tự động scale theo resolution
@@ -281,32 +281,33 @@ class ResponsiveManager {
     }
     
     getOptimalCakeScale() {
-        // Kích thước bánh kem nhỏ hơn, đặc biệt trên mobile dọc
+        // Điều chỉnh bánh kem phù hợp với trái tim to hơn
         let baseScale = 1.0;
         
         if (this.deviceType === 'mobile') {
             if (this.isPortrait) {
-                // Mobile dọc - bánh kem nhỏ hơn để nằm gọn trong trái tim
-                baseScale = Math.max(0.3, this.screenWidth / 800); // Giảm từ 0.5 xuống 0.3
+                // Mobile dọc - bánh kem nhỏ hơn để nằm gọn trong trái tim to
+                baseScale = Math.max(0.4, this.screenWidth / 700); // Tăng từ 0.3 lên 0.4
             } else {
-                baseScale = Math.max(0.5, this.screenWidth / 800);
+                // Mobile ngang - bánh kem to hơn một chút
+                baseScale = Math.max(0.6, this.screenWidth / 700); // Tăng từ 0.5 lên 0.6
             }
         } else if (this.deviceType === 'tablet') {
-            baseScale = Math.max(0.6, this.screenWidth / 900);
+            baseScale = Math.max(0.7, this.screenWidth / 800); // Tăng từ 0.6 lên 0.7
         } else {
             // Desktop - kích thước hợp lý
             if (this.screenWidth >= 1920) {
-                baseScale = 1.0;
+                baseScale = 1.2; // Tăng từ 1.0 lên 1.2
             } else if (this.screenWidth >= 1440) {
-                baseScale = 0.9;
+                baseScale = 1.1; // Tăng từ 0.9 lên 1.1
             } else {
-                baseScale = 0.8;
+                baseScale = 1.0; // Tăng từ 0.8 lên 1.0
             }
         }
         
         // Đảm bảo bánh kem nhỏ hơn trái tim
         let heartSize = this.getOptimalHeartSize();
-        let maxCakeScale = heartSize * 0.4; // Giảm từ 60% xuống 40% kích thước trái tim
+        let maxCakeScale = heartSize * 0.45; // Tăng từ 40% lên 45% kích thước trái tim
         
         return Math.min(baseScale, maxCakeScale);
     }
@@ -419,6 +420,57 @@ console.log('🔧 Position control functions available:');
 console.log('  adjustCakePosition(x, y, z) - Điều chỉnh vị trí bánh kem');
 console.log('  resetCakePosition() - Reset về vị trí tối ưu');
 console.log('  testSizes() - Kiểm tra kích thước hiện tại');
+
+// Function để test layout trên landscape
+window.testLandscapeLayout = function() {
+    const isLandscape = window.innerWidth > window.innerHeight;
+    const deviceType = window.responsiveManager?.deviceType;
+    
+    console.log(`
+🔄 === LANDSCAPE LAYOUT TEST ===
+📱 Device: ${deviceType}
+📐 Landscape: ${isLandscape}
+📏 Screen: ${window.innerWidth}x${window.innerHeight}
+❤️ Heart Size: ${window.responsiveManager?.getOptimalHeartSize()?.toFixed(2)}
+🎂 Cake Scale: ${window.responsiveManager?.getOptimalCakeScale()?.toFixed(2)}
+================================
+    `);
+    
+    if (isLandscape && deviceType === 'mobile') {
+        console.log('📱 Mobile Landscape detected - Text should be on the left side');
+    }
+};
+
+// Function để force landscape layout
+window.forceLandscapeLayout = function() {
+    const textContainer = document.querySelector('.birthday-text-container');
+    if (textContainer) {
+        textContainer.style.cssText = `
+            position: fixed !important;
+            top: 5vh !important;
+            left: 5% !important;
+            transform: none !important;
+            text-align: left !important;
+            width: 40% !important;
+            z-index: 10 !important;
+        `;
+        console.log('🔄 Forced landscape layout applied');
+    }
+};
+
+// Function để reset layout
+window.resetLayout = function() {
+    const textContainer = document.querySelector('.birthday-text-container');
+    if (textContainer) {
+        textContainer.style.cssText = '';
+        console.log('🔄 Layout reset to CSS defaults');
+    }
+};
+
+console.log('🔄 Layout control functions available:');
+console.log('  testLandscapeLayout() - Kiểm tra layout landscape');
+console.log('  forceLandscapeLayout() - Force layout landscape');
+console.log('  resetLayout() - Reset về CSS mặc định');
 
 // Export instance
 const responsiveManager = new ResponsiveManager();

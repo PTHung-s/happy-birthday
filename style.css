@@ -285,6 +285,56 @@ body {
     }
 }
 
+/* Responsive cho tablet landscape */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+    .birthday-text-container {
+        position: fixed;
+        top: 8vh;
+        left: 8%;
+        transform: none;
+        text-align: left;
+        width: 35%;
+        z-index: 10;
+    }
+    
+    .happy-birthday-main {
+        font-size: 32px !important;
+        margin: 0 0 12px 0 !important;
+    }
+    
+    .birthday-name {
+        font-size: 26px !important;
+        margin: 0 0 10px 0 !important;
+    }
+    
+    .birth-year {
+        font-size: 20px !important;
+    }
+    
+    .floating-texts {
+        left: 40%;
+        width: 60%;
+    }
+}
+
+/* Đảm bảo portrait vẫn đẹp trên tất cả thiết bị */
+@media (orientation: portrait) {
+    .birthday-text-container {
+        position: fixed !important;
+        top: 15% !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        text-align: center !important;
+        width: 90% !important;
+        z-index: 10 !important;
+    }
+    
+    .floating-texts {
+        left: 0 !important;
+        width: 100% !important;
+    }
+}
+
 /* Sửa vấn đề scroll trên mobile */
 @media (max-width: 768px) {
     html, body {
@@ -301,15 +351,47 @@ body {
         min-height: 100vh;
     }
     
-    /* Đảm bảo content có thể scroll */
+    /* Bố trí lại text khi landscape để không che bánh kem */
     .birthday-text-container {
-        position: relative; /* Thay vì fixed để có thể scroll */
-        margin-top: 10vh;
-        margin-bottom: 10vh;
+        position: fixed; /* Giữ fixed nhưng điều chỉnh vị trí */
+        top: 5vh; /* Đưa lên cao hơn */
+        left: 5%; /* Dời sang trái */
+        transform: none; /* Bỏ center transform */
+        text-align: left; /* Canh trái */
+        width: 40%; /* Chỉ chiếm 40% chiều rộng */
+        z-index: 10; /* Đảm bảo hiển thị trên cùng */
     }
     
+    .happy-birthday-main {
+        font-size: 24px !important; /* Nhỏ hơn để fit */
+        margin: 0 0 10px 0 !important;
+        line-height: 1.2 !important;
+    }
+    
+    .birthday-name {
+        font-size: 20px !important; /* Nhỏ hơn */
+        margin: 0 0 8px 0 !important;
+    }
+    
+    .birth-year {
+        font-size: 16px !important; /* Nhỏ hơn */
+    }
+    
+    /* Floating texts ở bên phải để không che */
     .floating-texts {
-        position: absolute; /* Thay vì fixed */
+        position: fixed;
+        left: 50%; /* Chỉ hiển thị ở nửa bên phải */
+        width: 50%;
+        overflow: hidden;
+    }
+    
+    /* Thông báo responsive di chuyển xuống dưới */
+    .auto-responsive-notice {
+        bottom: 10px !important;
+        top: auto !important;
+        right: 10px !important;
+        font-size: 10px !important;
+        padding: 5px 8px !important;
     }
 }
 
