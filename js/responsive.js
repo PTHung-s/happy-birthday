@@ -196,10 +196,10 @@ class ResponsiveManager {
         if (this.deviceType === 'mobile') {
             if (this.isPortrait) {
                 // Portrait mobile - TĂNG thêm 30% nữa
-                sizeMultiplier = Math.max(1.5, this.screenWidth / 350); // Tăng từ 1.2 lên 1.5
+                sizeMultiplier = Math.max(1.8, this.screenWidth / 350); // Tăng từ 1.2 lên 1.5
             } else {
                 // Landscape mobile - tăng thêm 30%
-                sizeMultiplier = Math.max(1.3, this.screenWidth / 600); // Tăng từ 1.0 lên 1.3
+                sizeMultiplier = Math.max(1.5, this.screenWidth / 600); // Tăng từ 1.0 lên 1.3
             }
         } else if (this.deviceType === 'tablet') {
             if (this.isPortrait) {
