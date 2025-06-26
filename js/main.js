@@ -11,11 +11,14 @@ class BirthdayApp {
     }
     
     init() {
+        // Bắt đầu phát nhạc ngay lập tức
+        this.initMusic();
+        
         this.setupThreeJS();
         this.setupLighting();
         this.setupCamera();
         this.setupRenderer();
-        
+
         // Initialize effects
         cakeEffect.createParticleSystem(this.scene);
         heartEffect.init();
@@ -46,6 +49,20 @@ class BirthdayApp {
         
         // Load saved settings (chỉ khi ở developer mode)
         // birthdayControls.loadSettings();
+    }
+    
+    initMusic() {
+        const music = document.getElementById('music');
+        
+        // Đặt thuộc tính để tăng khả năng autoplay
+        music.volume = 0.5;
+        music.muted = false;
+        music.preload = 'auto';
+        
+        // Thử phát nhạc ngay lập tức
+        this.forceAutoPlayMusic();
+        
+        console.log('🎵 Music initialization started...');
     }
     
     setupThreeJS() {
@@ -94,86 +111,101 @@ class BirthdayApp {
         const music = document.getElementById('music');
         const notice = document.getElementById('clickNotice');
         
-        // Tự động thử phát nhạc ngay khi load
+        // Ẩn thông báo click hoàn toàn vì chúng ta sẽ auto play
+        notice.style.display = 'none';
+        
+        // Tự động phát nhạc ngay lập tức
         setTimeout(() => {
-            this.tryAutoPlayMusic();
+            this.forceAutoPlayMusic();
+        }, 500);
+        
+        // Backup: thử lại nhiều lần nếu thất bại
+        let retryCount = 0;
+        const retryInterval = setInterval(() => {
+            if (!this.musicStarted && retryCount < 5) {
+                this.forceAutoPlayMusic();
+                retryCount++;
+            } else {
+                clearInterval(retryInterval);
+            }
         }, 1000);
-        
-        // Show notice after delay (backup nếu autoplay fail)
-        setTimeout(() => {
-            if (!this.musicStarted) {
-                notice.classList.add('show');
-            }
-        }, 3000);
-        
-        // Handle click to play music (backup)
-        const handleFirstClick = () => {
-            if (!this.musicStarted) {
-                music.play().catch(e => {
-                    console.log('Cannot play music - file may be missing:', e);
-                });
-                this.musicStarted = true;
-                notice.style.opacity = '0';
-                setTimeout(() => {
-                    notice.style.display = 'none';
-                }, 500);
-            }
-            window.removeEventListener('click', handleFirstClick);
-        };
-        
-        window.addEventListener('click', handleFirstClick);
     }
     
-    tryAutoPlayMusic() {
+    forceAutoPlayMusic() {
         const music = document.getElementById('music');
-        const notice = document.getElementById('clickNotice');
         
-        // Thử autoplay với volume thấp trước
-        music.volume = 0.1;
+        if (this.musicStarted) return;
+        
+        // Đặt volume mặc định
+        music.volume = 0.5;
         music.muted = false;
         
-        music.play()
-            .then(() => {
-                // Autoplay thành công
-                this.musicStarted = true;
-                notice.style.display = 'none';
-                
-                // Tăng dần volume
-                let volume = 0.1;
-                const volumeInterval = setInterval(() => {
-                    volume += 0.05;
-                    music.volume = Math.min(volume, 0.7);
-                    if (volume >= 0.7) {
-                        clearInterval(volumeInterval);
-                    }
-                }, 200);
-                
-                console.log('🎵 Music auto-started successfully!');
-            })
-            .catch(e => {
-                // Autoplay thất bại (browser policy)
-                console.log('🔇 Autoplay blocked by browser, waiting for user interaction');
-                
-                // Thử với interaction events
-                const tryPlayOnInteraction = () => {
-                    music.play().then(() => {
-                        this.musicStarted = true;
-                        notice.style.opacity = '0';
-                        setTimeout(() => notice.style.display = 'none', 500);
-                        
-                        // Tăng volume
-                        music.volume = 0.7;
-                        console.log('🎵 Music started after interaction!');
-                    }).catch(err => console.log('Music play error:', err));
-                };
-                
-                // Listen for any user interaction
-                ['click', 'touchstart', 'keydown'].forEach(event => {
-                    document.addEventListener(event, tryPlayOnInteraction, { once: true });
+        // Thử nhiều cách để phát nhạc
+        const playPromise = music.play();
+        
+        if (playPromise !== undefined) {
+            playPromise
+                .then(() => {
+                    // Thành công!
+                    this.musicStarted = true;
+                    console.log('🎵 Music auto-started successfully!');
+                    
+                    // Hiệu ứng fade in volume
+                    music.volume = 0.1;
+                    const fadeIn = setInterval(() => {
+                        if (music.volume < 0.6) {
+                            music.volume = Math.min(music.volume + 0.05, 0.6);
+                        } else {
+                            clearInterval(fadeIn);
+                        }
+                    }, 100);
+                })
+                .catch(error => {
+                    console.log('🔇 Autoplay prevented, trying alternative methods...', error);
+                    
+                    // Thử với user gesture simulation
+                    this.tryUserGesturePlay();
                 });
-            });
+        }
     }
     
+    tryUserGesturePlay() {
+        const music = document.getElementById('music');
+        
+        // Tạo một user gesture giả để trigger audio
+        const events = ['mousedown', 'touchstart', 'keydown', 'scroll'];
+        
+        const playOnInteraction = () => {
+            if (!this.musicStarted) {
+                music.play().then(() => {
+                    this.musicStarted = true;
+                    console.log('🎵 Music started on user interaction!');
+                    
+                    // Remove listeners sau khi thành công
+                    events.forEach(event => {
+                        document.removeEventListener(event, playOnInteraction);
+                    });
+                }).catch(e => {
+                    console.log('Still failed to play music:', e);
+                });
+            }
+        };
+        
+        // Add listeners cho tất cả các user interactions
+        events.forEach(event => {
+            document.addEventListener(event, playOnInteraction, { once: true });
+        });
+        
+        // Tự động trigger một fake interaction sau 2 giây
+        setTimeout(() => {
+            if (!this.musicStarted) {
+                // Trigger a programmatic event
+                const event = new Event('mousedown');
+                document.dispatchEvent(event);
+            }
+        }, 2000);
+    }
+
     startCakeFormation() {
         if (!cakeEffect.particleSystem) return;
         

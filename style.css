@@ -201,8 +201,19 @@ body {
 
 .floating-year {
     font-size: 18px;
-    color: #00ffff;
-    text-shadow: 0 0 8px #00ffff;
+    color: #ffd700;
+    text-shadow: 0 0 8px #ffd700;
+}
+
+.floating-emoji {
+    font-size: 24px;
+    animation: spin 4s linear infinite, floatAround 8s linear infinite;
+}
+
+/* Thêm animations cho emoji */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 /* Animations */
@@ -267,6 +278,10 @@ body {
     .floating-year {
         font-size: 14px;
     }
+    
+    .floating-emoji {
+        font-size: 20px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -293,5 +308,9 @@ body {
     
     .floating-year {
         font-size: 12px;
+    }
+    
+    .floating-emoji {
+        font-size: 18px;
     }
 }
