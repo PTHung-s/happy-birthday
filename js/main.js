@@ -20,7 +20,23 @@ class BirthdayApp {
         this.setupRenderer();
 
         // Initialize effects
-        cakeEffect.createParticleSystem(this.scene);
+        console.log('🎂 Initializing cake effect...');
+        try {
+            cakeEffect.createParticleSystem(this.scene);
+            
+            if (cakeEffect.particleSystem) {
+                console.log('✅ Cake particle system created successfully');
+                console.log('- Particle count:', cakeEffect.particleSystem.geometry.attributes.position.count);
+                console.log('- Cake scale:', CAKE_CONFIG.scale);
+                console.log('- Cake positions generated:', cakeEffect.positions.length / 3);
+            } else {
+                console.error('❌ Cake particle system is null!');
+            }
+        } catch (error) {
+            console.error('❌ Error creating cake effect:', error);
+        }
+        
+        console.log('❤️ Initializing heart effect...');
         heartEffect.init();
         
         // Setup responsive callbacks
@@ -86,8 +102,11 @@ class BirthdayApp {
             1000
         );
         
-        const cameraPos = responsiveManager.getCameraPosition();
-        this.camera.position.set(cameraPos.x, cameraPos.y, cameraPos.z);
+        // Đặt camera ở vị trí có thể thấy bánh kem rõ ràng
+        this.camera.position.set(0, 1, 4); // Đưa camera gần hơn
+        this.camera.lookAt(0, 0, 0); // Nhìn về center
+        
+        console.log('📷 Camera positioned at:', this.camera.position);
     }
     
     setupRenderer() {
@@ -111,8 +130,10 @@ class BirthdayApp {
         const music = document.getElementById('music');
         const notice = document.getElementById('clickNotice');
         
-        // Ẩn thông báo click hoàn toàn vì chúng ta sẽ auto play
-        notice.style.display = 'none';
+        // Kiểm tra xem element có tồn tại không trước khi truy cập
+        if (notice) {
+            notice.style.display = 'none';
+        }
         
         // Tự động phát nhạc ngay lập tức
         setTimeout(() => {
@@ -375,6 +396,38 @@ class BirthdayApp {
             console.log('🔄 Auto-resize applied:', responsiveManager.deviceType);
         }, 100);
     }
+    
+    // Debug function để kiểm tra bánh kem
+    debugCake() {
+        console.log('=== CAKE DEBUG INFO ===');
+        console.log('Scene objects:', this.scene.children.length);
+        console.log('Cake particle system exists:', !!cakeEffect.particleSystem);
+        
+        if (cakeEffect.particleSystem) {
+            console.log('Cake particle count:', cakeEffect.particleSystem.geometry.attributes.position.count);
+            console.log('Cake positions array length:', cakeEffect.positions.length);
+            console.log('Cake scale:', CAKE_CONFIG.scale);
+            console.log('Cake position:', cakeEffect.particleSystem.position);
+            console.log('Cake visible:', cakeEffect.particleSystem.visible);
+            
+            // Đưa camera về vị trí mặc định để thấy bánh kem
+            this.camera.position.set(0, 1, 4);
+            this.camera.lookAt(0, 0, 0);
+            console.log('Camera reset to default position');
+        } else {
+            console.log('❌ No cake particle system found!');
+            
+            // Thử tạo lại bánh kem
+            console.log('Attempting to recreate cake...');
+            cakeEffect.createParticleSystem(this.scene);
+            
+            if (cakeEffect.particleSystem) {
+                console.log('✅ Cake recreated successfully!');
+            }
+        }
+        
+        console.log('===================');
+    }
 }
 
 // Initialize app when page loads
@@ -384,7 +437,56 @@ window.addEventListener('load', () => {
     window.cakeEffect = cakeEffect;
     window.birthdayControls = birthdayControls;
     
+    // Debug functions
+    window.debugCake = () => window.birthdayApp.debugCake();
+    window.recreateCake = () => {
+        if (window.birthdayApp && window.birthdayApp.scene) {
+            cakeEffect.createParticleSystem(window.birthdayApp.scene);
+            console.log('🎂 Cake recreated!');
+        }
+    };
+    
+    // Global quick fix functions
+window.fixCake = function() {
+    console.log('🔧 Fixing cake visibility...');
+    
+    // Reset camera position
+    if (window.birthdayApp?.camera) {
+        window.birthdayApp.camera.position.set(0, 0.5, 4);
+        window.birthdayApp.camera.lookAt(0, 0, 0);
+        console.log('📷 Camera reset to see cake');
+    }
+    
+    // Reset cake scale
+    if (window.CAKE_CONFIG) {
+        window.CAKE_CONFIG.scale = 1.2;
+        console.log('🎂 Cake scale reset to 1.2');
+    }
+    
+    // Force recreate cake
+    if (window.birthdayApp?.scene) {
+        // Remove existing cake
+        if (window.cakeEffect?.particleSystem) {
+            window.birthdayApp.scene.remove(window.cakeEffect.particleSystem);
+        }
+        
+        // Create new cake
+        window.cakeEffect.createParticleSystem(window.birthdayApp.scene);
+        
+        // Start formation
+        setTimeout(() => {
+            window.birthdayApp.startCakeFormation();
+        }, 1000);
+        
+        console.log('🎂 Cake recreated and formation started!');
+    }
+    
+    console.log('✅ Cake fix complete! Check in a few seconds.');
+};
+
     console.log('🎂 Birthday App Loaded! Use these functions:');
+    console.log('- debugCake()        // Kiểm tra thông tin bánh kem');
+    console.log('- recreateCake()     // Tạo lại bánh kem nếu bị mất');
     console.log('- setHeartSize(size)');
     console.log('- setHeartPosition(x, y)');
     console.log('- setCakeScale(scale)');

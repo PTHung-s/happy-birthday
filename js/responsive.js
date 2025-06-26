@@ -160,10 +160,10 @@ class ResponsiveManager {
         if (this.deviceType === 'mobile') {
             if (this.isPortrait) {
                 // Portrait mobile - nhỏ hơn
-                sizeMultiplier = Math.max(0.6, this.screenWidth / 600);
+                sizeMultiplier = Math.max(0.8, this.screenWidth / 600);
             } else {
                 // Landscape mobile - vừa phải
-                sizeMultiplier = Math.max(0.8, this.screenWidth / 800);
+                sizeMultiplier = Math.max(0.9, this.screenWidth / 800);
             }
         } else if (this.deviceType === 'tablet') {
             if (this.isPortrait) {
@@ -245,31 +245,33 @@ class ResponsiveManager {
     }
     
     getOptimalCakeScale() {
-        // Lấy kích thước trái tim hiện tại để đảm bảo bánh kem nhỏ hơn
-        let heartSize = this.getOptimalHeartSize();
-        let baseScale = heartSize * 0.6; // Bánh kem = 60% kích thước trái tim
+        // Kích thước bánh kem vừa phải, luôn nhỏ hơn trái tim
+        let baseScale = 1.0; // Quay về kích thước cơ bản
         
         if (this.deviceType === 'mobile') {
             if (this.isPortrait) {
-                baseScale = Math.min(baseScale, Math.max(0.5, this.screenWidth / 800));
+                baseScale = Math.max(0.5, this.screenWidth / 600);
             } else {
-                baseScale = Math.min(baseScale, Math.max(0.6, this.screenWidth / 1000));
+                baseScale = Math.max(0.8, this.screenWidth / 800);
             }
         } else if (this.deviceType === 'tablet') {
-            baseScale = Math.min(baseScale, Math.max(0.7, this.screenWidth / 1100));
+            baseScale = Math.max(0.8, this.screenWidth / 900);
         } else {
-            // Desktop - đảm bảo tỷ lệ hợp lý
+            // Desktop - kích thước hợp lý
             if (this.screenWidth >= 1920) {
-                baseScale = Math.min(baseScale, 1.0);
+                baseScale = 1.3;
             } else if (this.screenWidth >= 1440) {
-                baseScale = Math.min(baseScale, 0.9);
+                baseScale = 1.2;
             } else {
-                baseScale = Math.min(baseScale, 0.8);
+                baseScale = 1.0;
             }
         }
         
-        // Đảm bảo bánh kem không quá nhỏ
-        return Math.max(0.4, baseScale);
+        // Đảm bảo bánh kem nhỏ hơn trái tim
+        let heartSize = this.getOptimalHeartSize();
+        let maxCakeScale = heartSize * 0.6; // Bánh kem = 60% kích thước trái tim
+        
+        return Math.min(baseScale, maxCakeScale);
     }
     
     getConfig(configObj) {
@@ -309,6 +311,36 @@ class ResponsiveManager {
         return this.getConfig(CAMERA_CONFIG);
     }
 }
+
+// Global debug function để kiểm tra bánh kem
+window.debugCake = function() {
+    console.log('=== 🎂 CAKE DEBUG INFO ===');
+    console.log('Cake effect exists:', !!window.cakeEffect);
+    console.log('Cake particle system:', !!window.cakeEffect?.particleSystem);
+    
+    if (window.cakeEffect?.particleSystem) {
+        const cake = window.cakeEffect.particleSystem;
+        console.log('Cake particle count:', cake.geometry.attributes.position.count);
+        console.log('Cake scale:', window.CAKE_CONFIG.scale);
+        console.log('Cake position:', cake.position);
+        console.log('Cake visible:', cake.visible);
+        console.log('Cake in scene:', window.app?.scene?.children.includes(cake));
+    }
+    
+    if (window.app?.camera) {
+        console.log('Camera position:', window.app.camera.position);
+    }
+    
+    console.log('=================');
+    
+    // Force show cake if hidden
+    if (window.cakeEffect?.particleSystem) {
+        window.cakeEffect.particleSystem.visible = true;
+        console.log('✅ Forced cake to be visible');
+    }
+};
+
+console.log('🔧 Debug function available: debugCake()');
 
 // Export instance
 const responsiveManager = new ResponsiveManager();

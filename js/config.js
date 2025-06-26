@@ -74,11 +74,11 @@ const CAKE_CONFIG = {
     }
 };
 
-// Cấu hình camera
+// Cấu hình camera - điều chỉnh để thấy bánh kem rõ hơn
 const CAMERA_CONFIG = {
-    desktop: { x: 0, y: 0.3, z: 5 },
-    tablet: { x: 0, y: 0.4, z: 5.5 },
-    mobile: { x: 0, y: 0.5, z: 6 }
+    desktop: { x: 0, y: 0.5, z: 4 }, // Đưa camera gần hơn và cao hơn
+    tablet: { x: 0, y: 0.6, z: 4.5 },
+    mobile: { x: 0, y: 0.7, z: 5 }
 };
 
 // Breakpoints responsive nâng cao

@@ -107,7 +107,7 @@ class TextEffectsManager {
         for (let i = 0; i < count; i++) {
             setTimeout(() => {
                 this.createFloatingText();
-            }, i * 200); // Delay mỗi text 200ms
+            }, i * 200); // Delay mỗi text 200ms h
         }
     }
     
